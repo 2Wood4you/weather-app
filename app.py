@@ -85,15 +85,17 @@ if result:
         st.write("\n")
 
         if bad_weather:
-            st.write("Bleib lieber drin")
+            st.write("You'd better stay inside!")
         else:
-            st.write("Gutes Wetter, geh raus!")
+            st.write("The weather's nice — go outside!")
+
+        st.write("\n")
 
         if temp > 30:
-            st.write("Achtung, es ist zu heiß")
+            st.write("Warning: It's too hot!")
 
         if rain == 0 and temp > 15:
-            st.write("Perfekt für Sport")
+            st.write("Perfect for sports!")
 
         if temp < 10 and wind > 20:
-            st.write("Es ist unangenehm draußen")
+            st.write("It's unpleasant outside!")
