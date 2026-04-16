@@ -13,7 +13,7 @@ result = None
 timezone = ""
 
 def get_info(city_name):
-    geolocator = Nominatim(user_agent="get_geocode_from_city")
+    geolocator = Nominatim(user_agent="should-i-go-outside")
     location = geolocator.geocode(city_name)
 
     if location is None:
