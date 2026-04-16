@@ -41,13 +41,14 @@ tf = TimezoneFinder()
 
 st.title("Should I go outside?")
 
-test = st.text_area("Enter your city:", height=1)
+userCity = st.text_area("Enter your city:", key="city", height=1)
+
 
 if st.button("Check Weather"):
     placeholder = st.empty()
     placeholder.write("Checking...")
     # st.write("Checking...")
-    result = get_info(test)
+    result = get_info(userCity)
 
 if result:
     latitude, longitude = result
