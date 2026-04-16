@@ -15,10 +15,11 @@ timezone = ""
 
 @st.cache_data
 def get_info(city_name):
-    geolocator = Nominatim(user_agent="should-i-go-outside", timeout=10)
     try:
+        geolocator = Nominatim(user_agent="should-i-go-outside", timeout=10)
         location = geolocator.geocode(city_name)
     except GeocoderUnavailable:
+        placeholder.empty()
         st.write("Geocoding service unavailable ❌ Try again later")
         return None
 
