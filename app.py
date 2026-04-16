@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import datetime
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderUnavailable
 from timezonefinder import TimezoneFinder
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -12,9 +13,14 @@ longitude = 0
 result = None
 timezone = ""
 
+@st.cache_data
 def get_info(city_name):
-    geolocator = Nominatim(user_agent="should-i-go-outside")
-    location = geolocator.geocode(city_name)
+    geolocator = Nominatim(user_agent="should-i-go-outside", timeout=10)
+    try:
+        location = geolocator.geocode(city_name)
+    except GeocoderUnavailable:
+        st.write("Geocoding service unavailable ❌ Try again later")
+        return None
 
     if location is None:
         st.write("City not found ❌")
