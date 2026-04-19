@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import datetime
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderUnavailable
 from timezonefinder import TimezoneFinder
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -12,12 +13,18 @@ longitude = 0
 result = None
 timezone = ""
 
+@st.cache_data
 def get_info(city_name):
-    geolocator = Nominatim(user_agent="get_geocode_from_city")
-    location = geolocator.geocode(city_name)
+    geolocator = Nominatim(user_agent="should-i-go-outside", timeout=10)
+    try:
+        location = geolocator.geocode(city_name)
+    except:
+        placeholder.empty()
+        st.write("Something went wrong, please try again later")
+        return None
 
     if location is None:
-        st.write("City not found ❌")
+        st.write("City not found")
         return
 
     l_latitude = location.latitude
@@ -41,13 +48,14 @@ tf = TimezoneFinder()
 
 st.title("Should I go outside?")
 
-test = st.text_area("Enter your city:", height=1)
+userCity = st.text_area("Enter your city:", key="city", height=1)
+
 
 if st.button("Check Weather"):
     placeholder = st.empty()
     placeholder.write("Checking...")
     # st.write("Checking...")
-    result = get_info(test)
+    result = get_info(userCity)
 
 if result:
     latitude, longitude = result
