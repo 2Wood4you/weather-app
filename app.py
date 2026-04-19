@@ -6,6 +6,7 @@ from geopy.exc import GeocoderUnavailable
 from timezonefinder import TimezoneFinder
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from streamlit_geolocation import streamlit_geolocation
 
 base_url = "https://api.open-meteo.com/v1/forecast"
 latitude = 0
@@ -19,7 +20,7 @@ def get_info(city_name):
     try:
         location = geolocator.geocode(city_name)
     except:
-        placeholder.empty()
+        checktxt.empty()
         st.write("Something went wrong, please try again later")
         return None
 
@@ -52,12 +53,35 @@ userCity = st.text_area("Enter your city:", key="city", height=1)
 
 
 if st.button("Check Weather"):
-    placeholder = st.empty()
-    placeholder.write("Checking...")
-    # st.write("Checking...")
+    checktxt = st.empty()
+    checktxt.write("Checking...")
     result = get_info(userCity)
 
-if result:
+if st.button("Use own location (Not working yet)"):
+    checktxt = st.empty()
+    checktxt.write("Checking...")
+    try:
+        location = streamlit_geolocation()
+        st.write(location)
+
+        if location:
+            lat = location["latitude"]
+            lon = location["longitude"]
+
+            st.write(f"Lat: {lat}, Lon: {lon}")
+            result = lat, lon
+
+        else:
+            checktxt.empty()
+            st.write("Something went wrong")
+        if not result:
+            st.write("COuldn't get user's location 1")
+        st.write(result)
+    except:
+        st.write("COuldn't get user's location")
+
+
+if result and result != (None, None):
     latitude, longitude = result
 
     timezone = tf.timezone_at(lng=longitude, lat=latitude)
@@ -68,7 +92,7 @@ if result:
 
 
     if forecast:
-        placeholder.empty()
+        checktxt.empty()
 
         temp = forecast['hourly']['temperature_2m'][time_index]
         rain = forecast['hourly']['rain'][time_index]
